@@ -57,18 +57,39 @@ export default function LoginPage() {
         body: JSON.stringify({ token }),
       });
 
-      const json = await res.json() as { error?: string };
+      // Check if response is ok before trying to parse JSON
       if (!res.ok) {
-        setError(json.error || "Invalid admin credentials");
+        let errorMessage = "Invalid admin credentials";
+        try {
+          const json = await res.json() as { error?: string };
+          errorMessage = json.error || errorMessage;
+        } catch (parseError) {
+          // If JSON parsing fails, use status text
+          errorMessage = res.statusText || `Server error (${res.status})`;
+        }
+        setError(errorMessage);
         setLoading(false);
         return;
       }
+
+      const json = await res.json() as { error?: string };
 
       // success — go to dashboard
       router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      // Show more specific error messages
+      if (err instanceof Error) {
+        if (err.message.includes("Supabase configuration")) {
+          setError("Server configuration error. Please contact administrator.");
+        } else if (err.message.includes("fetch") || err.message.includes("Network")) {
+          setError("Network error. Please check your connection and try again.");
+        } else {
+          setError(err.message || "An unexpected error occurred. Please try again.");
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
       setLoading(false);
     }
   }, [email, password, router]);
