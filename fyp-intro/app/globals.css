@@ -5,6 +5,22 @@
   --foreground: #171717;
 }
 
+/* Dark mode support - Tailwind v4 */
+@variant dark (.dark &);
+
+/* Ensure dark mode classes work */
+.dark {
+  color-scheme: dark;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html:not(.dark) {
+  color-scheme: light;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
