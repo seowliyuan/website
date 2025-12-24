@@ -663,8 +663,8 @@ export default function UsersPage() {
       {/* Activity Modal */}
       {activityModalOpen && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#0f1724] border border-gray-800 rounded-xl w-full max-w-4xl shadow-2xl max-h-[85vh] overflow-auto">
-            <div className="sticky top-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-b border-gray-800 p-4 md:p-6">
+          <div className="bg-[#0f1724] border border-gray-800 rounded-xl w-full max-w-4xl shadow-2xl max-h-[85vh] flex flex-col">
+            <div className="sticky top-0 z-10 bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm border-b border-gray-800 p-4 md:p-6 flex-shrink-0">
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -686,7 +686,7 @@ export default function UsersPage() {
               </div>
             </div>
 
-            <div className="p-4 md:p-6">
+            <div className="p-4 md:p-6 overflow-y-auto flex-1">
               {loadingActivity ? (
                 <div className="flex items-center justify-center py-20">
                   <div className="text-center">
