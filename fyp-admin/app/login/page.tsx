@@ -3,11 +3,17 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
-// client-side supabase — needs NEXT_PUBLIC keys set in .env.local
-const supabaseClient = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+// Helper function to get Supabase client (lazy initialization)
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    throw new Error("Supabase configuration is missing. Please check your environment variables.");
+  }
+  
+  return createClient(url, key);
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,6 +33,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // Get Supabase client (validates env vars)
+      const supabaseClient = getSupabaseClient();
+      
       // sign in with Supabase (returns a session + access token)
       const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email.trim(),
