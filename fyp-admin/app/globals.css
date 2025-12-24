@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background); 
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Ensure full-height layout so pages can fill the viewport */
+html, body, #__next {
+  height: 100%;
+}
+
+/* make sure the root body never collapses, helpful for dashboard full-height sidebars */
+body {
+  min-height: 100vh;
+}
+
+/* Admin card styles (dark) */
+.admin-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+.muted { color: rgba(255,255,255,0.65); }
+
+.pill {
+  display: inline-block; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;
+  background: rgba(255,255,255,0.04); color: var(--foreground);
+}
+
+/* Utility for content that should stretch to viewport width */
+.app-container { width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+/* Toast animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
