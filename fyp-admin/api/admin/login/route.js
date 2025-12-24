@@ -6,16 +6,17 @@ const COOKIE_NAME = "admin_token";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // one week in seconds
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
-// Validate environment variables
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
-
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
-  console.error("Missing required Supabase environment variables");
+// Helper function to get Supabase client (lazy initialization)
+function getSupabaseAdmin() {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
+  
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
+    throw new Error("Missing required Supabase environment variables");
+  }
+  
+  return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
 }
-
-// Server-only supabase client using the service role (keep this secret)
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
 
 /**
  * POST /api/admin/login
@@ -33,16 +34,10 @@ export async function POST(req) {
     );
   }
 
-  // Validate environment variables
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
-    console.error("Missing required Supabase environment variables");
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
   try {
+    // Get Supabase client (validates env vars)
+    const supabaseAdmin = getSupabaseAdmin();
+    
     const body = await req.json();
 
     // Validate request body
