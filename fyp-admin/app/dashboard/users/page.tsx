@@ -725,7 +725,7 @@ export default function UsersPage() {
                         Recent Food Logs
                       </h4>
                       <div className="space-y-2">
-                        {userActivity.recent_logs.slice(0, 10).map((log: any, idx: number) => (
+                        {userActivity.recent_logs.slice(0, 10).map((log, idx: number) => (
                           <div key={idx} className="bg-[#0b1220] border border-gray-800 rounded-lg p-3">
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
@@ -755,7 +755,7 @@ export default function UsersPage() {
                         Recent AI Recognitions
                       </h4>
                       <div className="space-y-2">
-                        {userActivity.recent_recognitions.slice(0, 10).map((rec: any, idx: number) => (
+                        {userActivity.recent_recognitions.slice(0, 10).map((rec: { food_name?: string; recognized_food?: string; created_at?: string; recognized_at?: string }, idx: number) => (
                           <div key={idx} className="bg-[#0b1220] border border-gray-800 rounded-lg p-3">
                             <div className="text-sm text-gray-300">
                               {rec.food_name || rec.recognized_food || 'Food recognized'}
@@ -778,7 +778,7 @@ export default function UsersPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <div className="text-lg font-medium text-gray-300 mb-2">No recent activity</div>
-                      <div className="text-sm text-gray-500">This user hasn't logged any activities yet</div>
+                      <div className="text-sm text-gray-500">This user has not logged any activities yet</div>
                     </div>
                   )}
                 </div>
