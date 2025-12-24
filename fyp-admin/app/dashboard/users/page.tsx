@@ -741,7 +741,10 @@ export default function UsersPage() {
                                 </div>
                               </div>
                               {log.calories && (
-                                <div className="text-sm font-semibold text-purple-400">{log.calories} cal</div>
+                                <div className={`text-sm font-semibold ${log.calories > 2000 ? 'text-red-400' : 'text-purple-400'}`} title={log.calories > 2000 ? 'Unrealistic calorie value - possible data error' : ''}>
+                                  {log.calories} cal
+                                  {log.calories > 2000 && <span className="ml-1 text-xs">⚠️</span>}
+                                </div>
                               )}
                             </div>
                           </div>

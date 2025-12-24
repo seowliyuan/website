@@ -555,6 +555,15 @@ router.get('/users/:id/logs', async (req, res) => {
             let foodName = log.item_name || log.food_name || 'Unknown Food';
             let calories = log.kcal || log.calories || null;
             
+            // Validate calories - flag unrealistic values (likely data errors)
+            // Normal food items should be between 0-2000 calories per serving
+            // If calories > 2000, it's likely a data error (wrong unit, typo, etc.)
+            const MAX_REASONABLE_CALORIES = 2000;
+            if (calories && calories > MAX_REASONABLE_CALORIES) {
+              console.warn(`⚠️ Unrealistic calorie value detected: ${calories} cal for "${foodName}". This might be a data error.`);
+              // Don't set to null, but log a warning - admin can see the issue
+            }
+            
             // Try to get more details from malaysia_food_database if we have an item_name
             if (log.item_name) {
               try {
@@ -570,8 +579,13 @@ router.get('/users/:id/logs', async (req, res) => {
                   foodName = foodData.name || foodName;
                   console.log('Found food in database:', foodData.name);
                   // If log doesn't have calories, estimate from database
-                  if (!calories && foodData.kcal_per_100g) {
-                    calories = Math.round(foodData.kcal_per_100g);
+                  // If log has unrealistic calories (>2000), use database value as correction
+                  if ((!calories || (calories && calories > MAX_REASONABLE_CALORIES)) && foodData.kcal_per_100g) {
+                    const dbCalories = Math.round(foodData.kcal_per_100g);
+                    if (calories && calories > MAX_REASONABLE_CALORIES) {
+                      console.log(`Correcting unrealistic calories ${calories} → ${dbCalories} for "${foodName}"`);
+                    }
+                    calories = dbCalories;
                   }
                 } else {
                   console.log('Food not found in database for:', log.item_name, '- using item_name directly');
