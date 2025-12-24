@@ -40,7 +40,12 @@ interface UserActivity {
     created_at?: string;
     calories?: number;
   }>;
-  recent_recognitions: unknown[];
+  recent_recognitions: Array<{
+    food_name?: string;
+    recognized_food?: string;
+    created_at?: string;
+    recognized_at?: string;
+  }>;
 }
 
 export default function UsersPage() {
@@ -755,7 +760,7 @@ export default function UsersPage() {
                         Recent AI Recognitions
                       </h4>
                       <div className="space-y-2">
-                        {userActivity.recent_recognitions.slice(0, 10).map((rec: { food_name?: string; recognized_food?: string; created_at?: string; recognized_at?: string }, idx: number) => (
+                        {userActivity.recent_recognitions.slice(0, 10).map((rec, idx: number) => (
                           <div key={idx} className="bg-[#0b1220] border border-gray-800 rounded-lg p-3">
                             <div className="text-sm text-gray-300">
                               {rec.food_name || rec.recognized_food || 'Food recognized'}
