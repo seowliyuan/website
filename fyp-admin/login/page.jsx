@@ -4,11 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
-// create a client on the client side using the public env keys
-const supabaseClient = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+// Helper function to get Supabase client (lazy initialization)
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    throw new Error("Supabase configuration is missing");
+  }
+  
+  return createClient(url, key);
+}
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -19,8 +25,12 @@ export default function AdminLoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Sign in using Supabase client to get an access token
-    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+    try {
+      // Get Supabase client (validates env vars)
+      const supabaseClient = getSupabaseClient();
+      
+      // Sign in using Supabase client to get an access token
+      const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -47,6 +57,10 @@ export default function AdminLoginPage() {
     }
 
     router.push("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || "An error occurred during login");
+    }
   };
 
   return (
